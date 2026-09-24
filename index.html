@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>名古屋冬日雪景 8 天 7 夜之旅</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #1a365d;
+            --accent-color: #e53e3e;
+            --bg-color: #f7fafc;
+            --card-bg: #ffffff;
+            --text-color: #2d3748;
+            --subtext-color: #718096;
+            --border-radius: 12px;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding-bottom: 70px;
+            max-width: 480px;
+            margin: 0 auto;
+            min-height: 100vh;
+        }
+
+        /* Header Styling */
+        header {
+            background: linear-gradient(135deg, #1a365d 0%, #2b6cb0 100%);
+            color: white;
+            padding: 20px 16px;
+            text-align: center;
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+            position: relative;
+            box-shadow: var(--shadow);
+        }
+
+        header h1 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        header p {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        .snow-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            margin-top: 6px;
+        }
+
+        /* Day Selector for Schedule */
+        .day-selector {
+            display: flex;
+            overflow-x: auto;
+            padding: 12px 8px;
+            gap: 8px;
+            scrollbar-width: none;
+        }
+
+        .day-selector::-webkit-scrollbar {
+            display: none;
+        }
+
+        .day-btn {
+            flex: 0 0 auto;
+            padding: 8px 14px;
+            border: none;
+            background: white;
+            color: var(--text-color);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .day-btn.active {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        /* Main Content Container */
+        .content-container {
+            padding: 0 16px;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Timeline Items */
+        .timeline-item {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: var(--shadow);
+            border-left: 4px solid var(--primary-color);
+            position: relative;
+        }
+
+        .timeline-time {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--accent-color);
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .timeline-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .timeline-desc {
+            font-size: 0.85rem;
+            color: var(--subtext-color);
+            line-height: 1.4;
+            margin-bottom: 10px;
+        }
+
+        /* Button Styling */
+        .map-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #4285F4;
+            color: white;
+            text-decoration: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+
+        .map-btn:active {
+            background: #3367d6;
+        }
+
+        /* Info Cards */
+        .info-card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: var(--shadow);
+        }
+
+        .info-card h3 {
+            font-size: 1rem;
+            color: var(--primary-color);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid #edf2f7;
+            padding-bottom: 6px;
+        }
+
+        .info-card p, .info-card li {
+            font-size: 0.85rem;
+            color: var(--text-color);
+            line-height: 1.5;
+        }
+
+        .info-card ul {
+            padding-left: 20px;
+            margin-top: 6px;
+        }
+
+        .info-card .tag {
+            display: inline-block;
+            background: #ebf8ff;
+            color: #2b6cb0;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-right: 4px;
+        }
+
+        /* Bottom Navigation Bar */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 480px;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.08);
+            z-index: 1000;
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--subtext-color);
+            text-decoration: none;
+            font-size: 0.7rem;
+            gap: 4px;
+            cursor: pointer;
+            border: none;
+            background: none;
+            width: 20%;
+        }
+
+        .nav-item i {
+            font-size: 1.1rem;
+        }
+
+        .nav-item.active {
+            color: var(--primary-color);
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1><i class="fa-solid fa-snowflake"></i> 名古屋 8 天 7 夜之旅</h1>
+        <p>2027/01/26 ~ 2027/02/02</p>
+        <div class="snow-badge">冬日雪景 & 親子長輩同遊</div>
+    </header>
+
+    <div class="content-container">
+
+        <!-- 每日行程 Tab -->
+        <div id="schedule" class="tab-content active">
+            <div class="day-selector">
+                <button class="day-btn active" onclick="showDay(1)">D1 1/26</button>
+                <button class="day-btn" onclick="showDay(2)">D2 1/27</button>
+                <button class="day-btn" onclick="showDay(3)">D3 1/28</button>
+                <button class="day-btn" onclick="showDay(4)">D4 1/29</button>
+                <button class="day-btn" onclick="showDay(5)">D5 1/30</button>
+                <button class="day-btn" onclick="showDay(6)">D6 1/31</button>
+                <button class="day-btn" onclick="showDay(7)">D7 2/01</button>
+                <button class="day-btn" onclick="showDay(8)">D8 2/02</button>
+            </div>
+
+            <!-- D1 -->
+            <div id="day-1" class="day-schedule">
+                <div class="timeline-item">
+                    <div class="timeline-time"><i class="fa-regular fa-clock"></i> 10:20 - 13:55</div>
+                    <div class="timeline-title">星宇航空 JX1838（桃機 T1 ➔ 中部國際機場）</div>
+                    <div class="timeline-desc">第一組（3大1小）搭乘班機抵達名古屋。</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-time"><i class="fa-regular fa-clock"></i> 14:30 - 15:30</div>
+                    <div class="timeline-title">搭乘名鐵特急 μSKY 至名鐵名古屋站</div>
+                    <div class="timeline-desc">車程約 28 分鐘，票價全車指定席 ¥1,430/人。</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-time"><i class="fa-regular fa-clock"></i> 15:30 - 16:30</div>
+                    <div class="timeline-title">飯店 Check-in 辦理入住</div>
+                    <div class="timeline-desc">DEL style Nagoya Nayabashi by Daiwa Roynet Hotel 寄放行李。</div>
+                    <a href="https://maps.app.goo.gl/9yG2d3G6Mh5o4qf17" target="_blank" class="map-btn"><i class="fa-solid fa-location-dot"></i> 開啟地圖</a>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-time"><i class="fa-regular fa-clock"></i> 17:20 - 19:15</div>
+                    <div class="timeline-title">晚餐：鰻櫃 花岡（ひつまぶし花岡）</div>
+                    <div class="timeline-desc">享用經典名古屋鰻魚飯三吃。</div>
+                    <a href="https://maps.app.goo.gl/uXp4oY1GzB4eNfGDA" target="_blank" class="map-btn"><i class="fa-solid fa-location-dot"></i> 開啟地圖</a>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-time"><i class="fa-regular fa-clock"></i> 19:30 - 21:00</div>
+                    <div class="timeline-title">Alpen NAGOYA 逛街採買</div>
+                    <div class="timeline-desc">大型運動用品旗艦店購物（營業至 21:00）。</div>
+                    <a href="https://maps.app.goo.gl/1Q8G8q8KkCg" target="_blank" class="map-btn"><i class="fa-solid fa-location-dot"></i> 開啟地圖</a>
+                </div>
+            </div>
+
+            <!-- D2 -->
+            <div id="day-2" class="day-schedule" style="display:none;">
+                <div class="timeline-item">
+                    <div class="timeline-time"><i class="fa-regular fa-clock"></i> 08:30 - 09:30</div>
+                    <div class="timeline-title">退房與寄放行李，前往樂園</div>
+                    <div class="timeline-desc">JR 名古屋站寄放大型行李，搭乘青波線至金城ふ頭站 (24分鐘, ¥360)。</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-time"><i class="fa-regular fa-clock"></i> 10:00 - 18:00</div>
+                    <div class="timeline-title">LEGOLAND Japan 樂高樂園</div>
+                    <div class="timeline-desc">親子歡樂時間。午餐推薦：Brick House Burgers。</div>
+                    <a href="https://maps.app.goo.gl/2L9p3a4K2dC6B6f39" target="_blank" class="map-btn"><i class="fa-solid fa-location-dot"></i> 開啟地圖</a>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-time"><i class="fa-regular fa-clock"></i> 15:30</div>
+                    <div class="timeline-title">第二組抵達中部機場 (CX530)</div>
+                    <div class="timeline-desc">2長輩3成人搭乘 μSKY 前往太閤通站「大吉屋ONE」民宿辦理入住。</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-time"><i class="fa-regular fa-clock"></i> 19:30 - 21:00</div>
+                    <div class="timeline-title">兩組成員會合晚餐：燒肉的和民 名站店</div>
+                    <div class="timeline-desc">全團 9 人齊聚享用豐富燒肉晚宴。</div>
+                    <a href="https://maps.app.goo.gl/V5X7vD62H7Fp5X6A6" target="_blank" class="map-btn"><i class="fa-solid fa-location-dot"></i> 開啟地圖</a>
+                </div>
+            </div>
+
+            <!-- D3 -->
+            <div id="day-3" class="day-schedule" style="display:none;">
+                <div class="timeline-item">
+                    <div class="timeline-time"><i class="fa-regular fa-clock"></i> 08:00 - 10:30</div>
+                    <div class="timeline-title">包車出發前往飛驒高山</div>
+                    <div class="timeline-desc">民宿門口上車，避開晨間車流（車程約 2.5 小時）。</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-time"><i class="fa-regular fa-clock"></i> 10:30 - 13:00</div>
+                    <div class="timeline-title">高山老街漫步與飛驒牛午餐</div>
+                    <div class="timeline-desc">遊覽三町通，品嚐飛驒牛串燒與在地清酒。</div>
+                    <a href="https://maps.app.goo.gl/yJ6PZ1kM7H4a76rS9" target="_blank" class="map-btn"><i class="fa-solid fa-location-dot"></i> 開啟地圖</a>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-time"><i class="fa-regular fa-clock"></i> 13:50 - 16:20</div>
+                    <div class="timeline-title">白川鄉合掌村雪景巡禮</div>
+                    <div class="timeline-desc">搭乘接駁車至展望台俯瞰絕美夢幻雪景、參觀傳統合掌造。</div>
+                    <a href="https://maps.app.goo.gl/aP9W7G8kLpM5S6qZ8" target="_blank" class="map-btn"><i class="fa-solid fa-location-dot"></i> 開啟地圖</a>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-time"><i class="fa-regular fa-clock"></i> 19:00 - 21:00</div>
+                    <div class="timeline-title">晚餐：矢場豚味噌豬排</div>
+                    <div class="timeline-desc">返回名古屋享用正宗味噌豬排。</div>
+                    <a href="https://maps.app.goo.gl/S6M6J4uY8ZgA81m98" target="_blank" class="map-btn"><i class="fa-solid fa-location-dot"></i> 開啟地圖</a>
+                </div>
+            </div>
+
+            <!-- D4 -->
+            <div id="day-4" class="day-schedule" style="display:none;">
+                <div class="timeline-item">
+                    <div class="timeline-time"><i class="fa-regular fa-clock"></i> 09:00 - 10:30</div>
+                    <div class="timeline-title">包車出發前往牧歌之里</div>
+                    <div class="timeline-desc">專車接送至岐阜縣雪地樂園。</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-time"><i class="fa-regular fa-clock"></i> 10:30 - 15:30</div>
+                    <div class="timeline-title">牧歌之里：玩雪體驗 & 園區午餐</div>
+                    <div class="timeline-desc">體驗雪地甜甜圈、雪地香蕉船與餵食羊駝。</div>
+                    <a href="https://maps.app.goo.gl/R5P4b6f1D6D2c76J9" target="_blank" class="map-btn"><i class="fa-solid fa-location-dot"></i> 開啟地圖</a>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-time"><i class="fa-regular fa-clock"></i> 16:00 - 17:30</div>
+                    <div class="timeline-title">牧歌之湯（牧華）露天雪景溫泉</div>
+                    <div class="timeline-desc">泡湯洗去一身寒氣，享受雪景風呂。</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-time"><i class="fa-regular fa-clock"></i> 19:30 - 21:00</div>
+                    <div class="timeline-title">晚餐：蓬萊軒 鰻魚飯三吃</div>
+                    <div class="timeline-desc">松坂屋店享用頂級鰻魚飯。</div>
+                    <a href="https://maps.app.goo.gl/LgX2a1y5X7P8W9jC6" target="_blank" class="map-btn"><i class="fa-solid fa-location-dot"></i> 開啟地圖</a>
+                </div>
+            </div>
+
+            <!-- D5 -->
+            <div id="day-5" class="day-schedule" style="display:none;">
+                <div class="timeline-item">
+                    <div class="timeline-time"><i class="fa-regular fa-clock"></i> 09:00 - 10:00</div>
+                    <div class="timeline-title">前往名古屋港水族館</div>
+                    <div class="timeline-desc">太閤通站搭櫻通線至久屋大通，轉名城線至名古屋港站。</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-time"><i class="fa-regular fa-clock"></i> 10:00 - 15:00</div>
+                    <div class="timeline-title">名古屋港水族館參觀</div>
+                    <div class="timeline-desc">觀看大型海豚秀、虎鯨與企鵝遊行。</div>
+                    <a href="https://maps.app.goo.gl/S2oW2fB2D5D6S3mC8" target="_blank" class="map-btn"><i class="fa-solid fa-location-dot"></i> 開啟地圖</a>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-time"><i class="fa-regular fa-clock"></i> 15:30 - 18:00</div>
+                    <div class="timeline-title">大須商店街漫步採買</div>
+                    <div class="timeline-desc">感受老街風情與在地美食。</div>
+                    <a href="https://maps.app.goo.gl/R3B9S8kS3J3K1m487" target="_blank" class="map-btn"><i class="fa-solid fa-location-dot"></i> 開啟地圖</a>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-time"><i class="fa-regular fa-clock"></i> 18:30 - 20:30</div>
+                    <div class="timeline-title">晚餐：世界之山將 手羽先</div>
+                    <div class="timeline-desc">享用夢幻炸雞翅與名古屋家常料理。</div>
+                    <a href="https://maps.app.goo.gl/f2A8K8jK8L2P11m99" target="_blank" class="map-btn"><i class="fa-solid fa-location-dot"></i> 開啟地圖</a>
+                </div>
+            </div>
+
+            <!-- D6 -->
+            <div id="day-6" class="day-schedule" style="display:none;">
+                <div class="timeline-item">
+                    <div class="timeline-time"><i class="fa-regular fa-clock"></i> 08:30 - 09:30</div>
+                    <div class="timeline-title">第二組退房前往機場 (CX531 16:40)</div>
+                    <div class="timeline-desc">第二組成員準備搭機返台。</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-time"><i class="fa-regular fa-clock"></i> 09:00 - 09:30</div>
+                    <div class="timeline-title">第一組 JR 名古屋站租車取車</div>
+                    <div class="timeline-desc">辦理自駕租車手續（請備妥駕照正本與譯本）。</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-time"><i class="fa-regular fa-clock"></i> 11:00 - 17:00</div>
+                    <div class="timeline-title">鈴鹿賽道樂園（Suzuka Circuit）</div>
+                    <div class="timeline-desc">體驗各項賽車遊樂設施與賽道駕駛體驗。</div>
+                    <a href="https://maps.app.goo.gl/X4fW2E3R5T2Y1k8S7" target="_blank" class="map-btn"><i class="fa-solid fa-location-dot"></i> 開啟地圖</a>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-time"><i class="fa-regular fa-clock"></i> 17:30</div>
+                    <div class="timeline-title">入住鈴鹿賽道飯店 & 享用晚餐</div>
+                    <div class="timeline-desc">Suzuka Circuit Hotel 入住與放鬆。</div>
+                    <a href="https://maps.app.goo.gl/d2F2X8A8b2M4G7m48" target="_blank" class="map-btn"><i class="fa-solid fa-location-dot"></i> 開啟地圖</a>
+                </div>
+            </div>
+
+            <!-- D7 -->
+            <div id="day-7" class="day-schedule" style="display:none;">
+                <div class="timeline-item">
+                    <div class="timeline-time"><i class="fa-regular fa-clock"></i> 10:00 - 16:30</div>
+                    <div class="timeline-title">鈴鹿賽道樂園全日遊</div>
+                    <div class="timeline-desc">暢玩樂園各項主題設施。</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-time"><i class="fa-regular fa-clock"></i> 16:30 - 18:00</div>
+                    <div class="timeline-title">自駕返程至金山站辦理還車</div>
+                    <div class="timeline-desc">金山站順利還車並入住飯店。</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-time"><i class="fa-regular fa-clock"></i> 18:30</div>
+                    <div class="timeline-title">入住 Comfort Hotel Nagoya Kanayama</div>
+                    <div class="timeline-desc">辦理入住與周邊晚餐購物。</div>
+                    <a href="https://maps.app.goo.gl/J3f1G4D5yK2M9" target="_blank" class="map-btn"><i class="fa-solid fa-location-dot"></i> 開啟地圖</a>
+                </div>
+            </div>
+
+            <!-- D8 -->
+            <div id="day-8" class="day-schedule" style="display:none;">
+                <div class="timeline-item">
+                    <div class="timeline-time"><i class="fa-regular fa-clock"></i> 10:00 - 14:00</div>
+                    <div class="timeline-title">金山站與熱田神宮周邊巡禮</div>
+                    <div class="timeline-desc">最後市區採買與景點漫步。</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-time"><i class="fa-regular fa-clock"></i> 14:30 - 15:30</div>
+                    <div class="timeline-title">搭乘名鐵特急至中部國際機場</div>
+                    <div class="timeline-desc">金山站搭乘特急直達機場 (約 25 分鐘)。</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-time"><i class="fa-regular fa-clock"></i> 15:30 - 18:00</div>
+                    <div class="timeline-title">機場免稅店伴手禮採買</div>
+                    <div class="timeline-desc">購買蝦餅/仙貝與各式伴手禮。</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-time"><i class="fa-regular fa-clock"></i> 19:40 - 22:15</div>
+                    <div class="timeline-title">星宇航空 JX839 班機返台</div>
+                    <div class="timeline-desc">平安抵達桃園國際機場 T1，結束美好旅程。</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 交通資訊 Tab -->
+        <div id="transport" class="tab-content">
+            <div class="info-card">
+                <h3><i class="fa-solid fa-plane"></i> 航班資訊</h3>
+                <p><span class="tag">第一組</span><strong>星宇航空 JX1838/JX839</strong></p>
+                <p>去程: 1/26 10:20 TPE ➔ 13:55 NGO</p>
+                <p>回程: 2/02 19:40 NGO ➔ 22:15 TPE</p>
+                <br>
+                <p><span class="tag">第二組</span><strong>國泰航空 CX530/CX531</strong></p>
+                <p>去程: 1/27 12:00 TPE ➔ 15:35 NGO</p>
+                <p>回程: 1/31 16:40 NGO ➔ 19:10 TPE</p>
+            </div>
+
+            <div class="info-card">
+                <h3><i class="fa-solid fa-van-shuttle"></i> 包車資訊 (D3-D4)</h3>
+                <p><strong>行程規劃：</strong></p>
+                <p>• D3: 名古屋 ➔ 高山老街 ➔ 白川鄉合掌村 ➔ 名古屋</p>
+                <p>• D4: 名古屋 ➔ 牧歌之里雪地樂園 ➔ 名古屋</p>
+                <p style="margin-top:4px; color:var(--subtext-color);">請記得提前確認包車司機聯繫方式與接送地點。</p>
+            </div>
+
+            <div class="info-card">
+                <h3><i class="fa-solid fa-car"></i> 自駕資訊 (D6-D7)</h3>
+                <p><strong>取還車地點：</strong></p>
+                <p>• 取車：D6 09:00 JR 名古屋站</p>
+                <p>• 還車：D7 18:00 金山站</p>
+                <p style="margin-top:4px; color:var(--accent-color); font-weight:600;">⚠️ 請務必攜帶台灣駕照正本 + 國際駕照/日文譯本！</p>
+            </div>
+        </div>
+
+        <!-- 住宿資訊 Tab -->
+        <div id="hotel" class="tab-content">
+            <div class="info-card">
+                <h3><span class="tag">D1</span> DEL style Nagoya Nayabashi</h3>
+                <p><strong>地址：</strong>愛知縣名古屋市中區榮1-2-27</p>
+                <p><strong>說明：</strong>第一晚入住，鄰近伏見/納屋橋。</p>
+                <a href="https://maps.app.goo.gl/9yG2d3G6Mh5o4qf17" target="_blank" class="map-btn" style="margin-top:8px;"><i class="fa-solid fa-location-dot"></i> 開啟地圖</a>
+            </div>
+
+            <div class="info-card">
+                <h3><span class="tag">D2-D5</span> 大吉屋ONE (民宿)</h3>
+                <p><strong>地址：</strong>愛知縣名古屋市中村區若宮町1-11-4</p>
+                <p><strong>說明：</strong>鄰近太閤通站 1 號出口 (有電梯)，方便長輩與行李移動。</p>
+                <a href="https://maps.app.goo.gl/aA3Wr3AW6CcLsJXe6" target="_blank" class="map-btn" style="margin-top:8px;"><i class="fa-solid fa-location-dot"></i> 開啟地圖</a>
+            </div>
+
+            <div class="info-card">
+                <h3><span class="tag">D6</span> 鈴鹿賽道飯店 (Suzuka Circuit Hotel)</h3>
+                <p><strong>地址：</strong>三重縣鈴鹿市稻生町7992</p>
+                <p><strong>說明：</strong>直通賽道樂園，早晚餐包含。</p>
+                <a href="https://maps.app.goo.gl/d2F2X8A8b2M4G7m48" target="_blank" class="map-btn" style="margin-top:8px;"><i class="fa-solid fa-location-dot"></i> 開啟地圖</a>
+            </div>
+
+            <div class="info-card">
+                <h3><span class="tag">D7</span> Comfort Hotel Nagoya Kanayama</h3>
+                <p><strong>地址：</strong>愛知縣名古屋市熱田區波寄町25-1</p>
+                <p><strong>說明：</strong>鄰近金山站，方便還車與最後一日前往機場。</p>
+                <a href="https://maps.app.goo.gl/J3f1G4D5yK2M9" target="_blank" class="map-btn" style="margin-top:8px;"><i class="fa-solid fa-location-dot"></i> 開啟地圖</a>
+            </div>
+        </div>
+
+        <!-- 行李清單 Tab -->
+        <div id="luggage" class="tab-content">
+            <div class="info-card">
+                <h3><i class="fa-solid fa-id-card"></i> 證件與重要物品</h3>
+                <ul>
+                    <li>護照（效期 6 個月以上）</li>
+                    <li>台灣駕照正本 + 日文譯本（自駕者必備）</li>
+                    <li>機票 / 飯店 / 包車預訂單截圖</li>
+                    <li>網卡 / eSIM 啟用 QR Code</li>
+                    <li>日幣現金與信用卡</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <h3><i class="fa-solid fa-snowflake"></i> 冬日禦寒衣物</h3>
+                <ul>
+                    <li>保暖防水防風外套 / 羽絨衣</li>
+                    <li>發熱衣 / 保暖內衣褲</li>
+                    <li>防滑防水雪靴 / 運動鞋</li>
+                    <li>毛帽、圍巾、保暖手套</li>
+                    <li>厚毛襪（多備幾雙）</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <h3><i class="fa-solid fa-suitcase"></i> 個人隨身用品</h3>
+                <ul>
+                    <li>保濕乳液、護唇膏（日本冬季乾燥）</li>
+                    <li>常備藥品（感冒、腸胃、暈車藥）</li>
+                    <li>行動電源與充電線</li>
+                    <li>兒童 / 長輩隨身保暖與備用物品</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 預算 Tab -->
+        <div id="budget" class="tab-content">
+            <div class="info-card">
+                <h3><i class="fa-solid fa-coins"></i> 預算總覽（單人估算）</h3>
+                <p><strong>目標預算：</strong>約 $15,000 TWD / 人（不含機票）</p>
+                <p><strong>換算日圓預算：</strong>約 ¥68,000 JPY / 人</p>
+            </div>
+
+            <div class="info-card">
+                <h3><i class="fa-solid fa-list-check"></i> 預估花費明細 (JPY)</h3>
+                <ul>
+                    <li><strong>景點門票：</strong>約 ¥18,000
+                        <br><small>(樂高樂園 + 水族館 + 牧歌之里 + 鈴鹿賽道)</small>
+                    </li>
+                    <li style="margin-top:6px;"><strong>交通費用：</strong>約 ¥22,000
+                        <br><small>(μSKY 機場來回 + 地鐵 + 包車分攤 + 租車油資與過路費)</small>
+                    </li>
+                    <li style="margin-top:6px;"><strong>餐費與雜費：</strong>約 ¥28,000
+                        <br><small>(鰻魚飯、飛驒牛、燒肉與每日餐飲購物)</small>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Bottom Navigation Bar -->
+    <nav class="bottom-nav">
+        <button class="nav-item active" onclick="switchTab('schedule', this)">
+            <i class="fa-solid fa-calendar-days"></i>
+            <span>行程</span>
+        </button>
+        <button class="nav-item" onclick="switchTab('transport', this)">
+            <i class="fa-solid fa-bus"></i>
+            <span>交通</span>
+        </button>
+        <button class="nav-item" onclick="switchTab('hotel', this)">
+            <i class="fa-solid fa-hotel"></i>
+            <span>住宿</span>
+        </button>
+        <button class="nav-item" onclick="switchTab('luggage', this)">
+            <i class="fa-solid fa-suitcase"></i>
+            <span>行李</span>
+        </button>
+        <button class="nav-item" onclick="switchTab('budget', this)">
+            <i class="fa-solid fa-wallet"></i>
+            <span>預算</span>
+        </button>
+    </nav>
+
+    <script>
+        function switchTab(tabId, btnElement) {
+            // Hide all tab contents
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.classList.remove('active'));
+
+            // Show selected tab content
+            document.getElementById(tabId).classList.add('active');
+
+            // Update nav buttons style
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => item.classList.remove('active'));
+            btnElement.classList.add('active');
+
+            // Scroll to top when switching tab
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function showDay(dayNum) {
+            // Hide all day schedules
+            const days = document.querySelectorAll('.day-schedule');
+            days.forEach(day => day.style.display = 'none');
+
+            // Show selected day
+            document.getElementById('day-' + dayNum).style.display = 'block';
+
+            // Update day button active class
+            const dayBtns = document.querySelectorAll('.day-btn');
+            dayBtns.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+    </script>
+</body>
+</html>
